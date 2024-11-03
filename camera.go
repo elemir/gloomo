@@ -1,12 +1,9 @@
-package render
+package gloomo
 
 import (
 	"image"
-	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/text"
-	"golang.org/x/image/font"
 
 	"github.com/elemir/gloomo/geom"
 )
@@ -15,7 +12,6 @@ import (
 type Camera struct {
 	sceneSize geom.Vec2
 	bounds    geom.Rectangle
-	centerOn  Node
 }
 
 func NewCamera() *Camera {
@@ -34,13 +30,8 @@ func (c Camera) ViewPort(screen *ebiten.Image, mul float64) ViewPort {
 	}
 }
 
-func (c *Camera) CenterOn(obj Node) {
-	c.centerOn = obj
-}
-
 func (c *Camera) Move(shift geom.Vec2) {
 	c.bounds = c.bounds.Add(shift)
-	c.centerOn = nil
 }
 
 func (c *Camera) SetPosition(pos geom.Vec2) {
@@ -72,42 +63,8 @@ func (c *Camera) SetSize(w, h float64) {
 	c.bounds = geom.Rect(x, y, w, h)
 }
 
-func (c *Camera) Update() {
-	if c.centerOn == nil {
-		return
-	}
-
-	pos := c.centerOn.Bounds().Center()
-	c.SetPosition(pos)
-}
-
 func (c *Camera) RealMousePosition() geom.Vec2 {
 	x, y := ebiten.CursorPosition()
 
 	return c.bounds.Min.Add(geom.FromPoint(image.Pt(x, y)))
-}
-
-// ViewPort is a wrapper around ebiten.Image that allows to set bounds.
-type ViewPort struct {
-	img    *ebiten.Image
-	bounds geom.Rectangle
-	mul    float64
-}
-
-func (i ViewPort) DrawImage(image *ebiten.Image, options *ebiten.DrawImageOptions) {
-	x, y := i.bounds.Min.Mul(-i.mul).Unpack()
-	options.GeoM.Translate(x, y)
-	i.img.DrawImage(image, options)
-}
-
-func (i ViewPort) DrawRectShader(width, height int, shader *ebiten.Shader, options *ebiten.DrawRectShaderOptions) {
-	x, y := i.bounds.Min.Mul(-i.mul).Unpack()
-	options.GeoM.Translate(x, y)
-	i.img.DrawRectShader(width, height, shader, options)
-}
-
-func (i ViewPort) DrawText(str string, fnt font.Face, pos geom.Vec2, color color.Color) {
-	rpos := i.bounds.Min.Mul(-i.mul).Add(pos).Round()
-
-	text.Draw(i.img, str, fnt, rpos.X, rpos.Y, color)
 }

@@ -1,7 +1,8 @@
-package render
+package gloomo
 
 import (
 	"image/color"
+	"sort"
 
 	"github.com/hajimehoshi/ebiten/v2"
 
@@ -13,13 +14,14 @@ type Node interface {
 	Bounds() geom.Rectangle
 }
 
-type parNode struct {
+type node struct {
 	Node
 	parallax float64
+	zIndex   int
 }
 
 type Scene struct {
-	nodes  []parNode
+	nodes  []node
 	camera *Camera
 
 	w, h float64
@@ -48,9 +50,7 @@ func (s *Scene) SetBackground(clr color.Color) {
 }
 
 func (s *Scene) Draw(screen *ebiten.Image) {
-	s.camera.Update()
-
-	var nodes []parNode
+	var nodes []node
 
 	for _, node := range s.nodes {
 		min := s.camera.Bounds().Min.Mul(node.parallax)
@@ -65,40 +65,47 @@ func (s *Scene) Draw(screen *ebiten.Image) {
 		}
 	}
 
-	/*
-		sort.Slice(objs, func(i, j int) bool {
-			return objs[i].ZIndex() < objs[j].ZIndex()
-		})
-	*/
+	sort.Slice(nodes, func(i, j int) bool {
+		return nodes[i].zIndex < nodes[j].zIndex
+	})
 
 	if s.background != nil {
 		screen.Fill(s.background)
 	}
 
-	for _, obj := range nodes {
-		vp := s.camera.ViewPort(screen, obj.parallax)
-		obj.Draw(vp)
+	for _, node := range nodes {
+		vp := s.camera.ViewPort(screen, node.parallax)
+		node.Draw(vp)
 	}
 }
 
-/*
-	func (s *Scene) AddParallaxedObject(obj Node, mul float64) {
-		s.objs = append(s.objs, node{
-			Node:     obj,
-			parallax: mul,
-		})
+// AddNode is used for adding node to scene with specified options.
+func (s *Scene) AddNode(baseNode Node, opts ...AddNodeOpt) {
+	node := node{
+		Node: baseNode,
 	}
-*/
 
-func (s *Scene) AddNode(node Node, opts ...AddNodeOpt) {
-	s.nodes = append(s.nodes, parNode{
-		Node:     node,
-		parallax: 1.0,
-	})
+	for _, opt := range opts {
+		opt(&node)
+	}
+
+	s.nodes = append(s.nodes, node)
 }
 
-// TODO(evgenii.omelchenko): should be functional options with support of parallax and z index
-type AddNodeOpt struct{}
+// AddNodeOpt is used for configure node that added on scene.
+type AddNodeOpt func(*node)
+
+func WithParallax(parallax float64) AddNodeOpt {
+	return func(node *node) {
+		node.parallax = parallax
+	}
+}
+
+func WithZIndex(zIndex int) AddNodeOpt {
+	return func(node *node) {
+		node.zIndex = zIndex
+	}
+}
 
 func (s *Scene) Layout(w, h int) {
 	s.camera.SetSize(float64(w), float64(h))
