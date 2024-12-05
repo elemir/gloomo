@@ -33,3 +33,9 @@ func (i ViewPort) DrawText(str string, fnt font.Face, pos geom.Vec2, color color
 
 	text.Draw(i.img, str, fnt, rpos.X, rpos.Y, color)
 }
+
+func (i ViewPort) Set(pos geom.Vec2, clr color.Color) {
+	rpos := i.bounds.Min.Mul(-i.mul).Add(pos).Round()
+
+	i.img.Set(rpos.X, rpos.Y, clr)
+}
