@@ -1,6 +1,7 @@
 package geom
 
 import (
+	"fmt"
 	"math"
 )
 
@@ -15,6 +16,18 @@ func (a Angle) Normalize() Angle {
 	return Angle(rad)
 }
 
+func (a Angle) String() string {
+	return fmt.Sprintf("%.f°", a*180/math.Pi)
+}
+
 func (a Angle) Abs() Angle {
 	return Angle(math.Abs(float64(a)))
+}
+
+func (a Angle) Sin() float64 {
+	return math.Sin(float64(a))
+}
+
+func (a Angle) Cos() float64 {
+	return math.Cos(float64(a))
 }
