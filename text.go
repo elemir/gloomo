@@ -1,19 +1,19 @@
 package gloomo
 
 import (
+	"image"
 	"image/color"
 
 	"golang.org/x/image/font"
 
-	"github.com/elemir/gloomo/geom"
 	"github.com/hajimehoshi/ebiten/v2/text"
 )
 
 type Text struct {
 	str      string
 	fnt      font.Face
-	bounds   geom.Rectangle
-	position geom.Vec2
+	bounds   image.Rectangle
+	position image.Point
 }
 
 func NewText(fnt font.Face) *Text {
@@ -24,15 +24,15 @@ func NewText(fnt font.Face) *Text {
 
 func (txt *Text) SetString(str string) {
 	txt.str = str
-	txt.bounds = geom.FromRectangle(text.BoundString(txt.fnt, txt.str)).Add(txt.position)
+	txt.bounds = text.BoundString(txt.fnt, txt.str).Add(txt.position)
 }
 
-func (txt *Text) SetPosition(pos geom.Vec2) {
+func (txt *Text) SetPosition(pos image.Point) {
 	txt.position = pos
-	txt.bounds = geom.FromRectangle(text.BoundString(txt.fnt, txt.str)).Add(txt.position)
+	txt.bounds = text.BoundString(txt.fnt, txt.str).Add(txt.position)
 }
 
-func (txt Text) Bounds() geom.Rectangle {
+func (txt Text) Bounds() image.Rectangle {
 	return txt.bounds
 }
 

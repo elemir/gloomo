@@ -1,17 +1,17 @@
 package gloomo
 
 import (
+	"image"
 	"image/color"
+	"math"
 	"sort"
 
 	"github.com/hajimehoshi/ebiten/v2"
-
-	"github.com/elemir/gloomo/geom"
 )
 
 type Node interface {
 	Draw(vp ViewPort)
-	Bounds() geom.Rectangle
+	Bounds() image.Rectangle
 }
 
 type node struct {
@@ -24,25 +24,25 @@ type Scene struct {
 	nodes  []node
 	camera *Camera
 
-	w, h float64
+	w, h int
 
 	background color.Color
 }
 
-func NewScene(w, h float64) *Scene {
+func NewScene(w, h int) *Scene {
 	return &Scene{
 		w: w,
 		h: w,
 	}
 }
 
-func (s *Scene) Size() (float64, float64) {
+func (s *Scene) Size() (int, int) {
 	return s.w, s.h
 }
 
 func (s *Scene) SetCamera(camera *Camera) {
 	s.camera = camera
-	s.camera.sceneSize = geom.Vec2{s.w, s.h}
+	s.camera.sceneSize = image.Point{s.w, s.h}
 }
 
 func (s *Scene) SetBackground(clr color.Color) {
@@ -53,9 +53,16 @@ func (s *Scene) Draw(screen *ebiten.Image) {
 	var nodes []node
 
 	for _, node := range s.nodes {
-		min := s.camera.Bounds().Min.Mul(node.parallax)
+		min := s.camera.Bounds().Min
+
+		fMinX, fMinY := float64(min.X), float64(min.Y)
+		fMinX, fMinY = fMinX*node.parallax, fMinY*node.parallax
+		fMinX, fMinY = math.Round(fMinX), math.Round(fMinY)
+
+		min = image.Pt(int(fMinX), int(fMinY))
 		max := s.camera.Bounds().Size().Add(min)
-		camera := geom.Rectangle{
+
+		camera := image.Rectangle{
 			Min: min,
 			Max: max,
 		}
@@ -108,5 +115,5 @@ func WithZIndex(zIndex int) AddNodeOpt {
 }
 
 func (s *Scene) Layout(w, h int) {
-	s.camera.SetSize(float64(w), float64(h))
+	s.camera.SetSize(w, h)
 }

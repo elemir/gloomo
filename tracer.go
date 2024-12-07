@@ -1,14 +1,13 @@
 package gloomo
 
 import (
+	"image"
 	"image/color"
 	"math/rand/v2"
-
-	"github.com/elemir/gloomo/geom"
 )
 
 type Tracer struct {
-	trace []geom.Vec2
+	trace []image.Point
 	clr   color.Color
 }
 
@@ -25,7 +24,7 @@ func NewTracer() *Tracer {
 	}
 }
 
-func (s *Tracer) SetPosition(pos geom.Vec2) {
+func (s *Tracer) SetPosition(pos image.Point) {
 	/*	if len(s.trace) > 100 {
 			s.trace = s.trace[len(s.trace)-100:]
 		}
@@ -33,8 +32,8 @@ func (s *Tracer) SetPosition(pos geom.Vec2) {
 	s.trace = append(s.trace, pos)
 }
 
-func (s Tracer) Bounds() geom.Rectangle {
-	return geom.Rect(0, 0, 1000, 1000)
+func (s Tracer) Bounds() image.Rectangle {
+	return image.Rect(0, 0, 1000, 1000)
 }
 
 func (s Tracer) Draw(screen ViewPort) {

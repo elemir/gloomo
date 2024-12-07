@@ -1,9 +1,10 @@
 package gloomo
 
 import (
+	"image"
 	"image/color"
+	"math"
 
-	"github.com/elemir/gloomo/geom"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
 	"golang.org/x/image/font"
@@ -12,30 +13,38 @@ import (
 // ViewPort is a wrapper around ebiten.Image that allows to set bounds.
 type ViewPort struct {
 	img    *ebiten.Image
-	bounds geom.Rectangle
+	bounds image.Rectangle
 	mul    float64
 }
 
-func (i ViewPort) DrawImage(image *ebiten.Image, options *ebiten.DrawImageOptions) {
-	x, y := i.bounds.Min.Mul(-i.mul).Unpack()
+func (i ViewPort) DrawImage(img *ebiten.Image, options *ebiten.DrawImageOptions) {
+	x, y := i.pos(image.Point{})
 	options.GeoM.Translate(x, y)
-	i.img.DrawImage(image, options)
+
+	i.img.DrawImage(img, options)
 }
 
 func (i ViewPort) DrawRectShader(width, height int, shader *ebiten.Shader, options *ebiten.DrawRectShaderOptions) {
-	x, y := i.bounds.Min.Mul(-i.mul).Unpack()
+	x, y := i.pos(image.Point{})
 	options.GeoM.Translate(x, y)
+
 	i.img.DrawRectShader(width, height, shader, options)
 }
 
-func (i ViewPort) DrawText(str string, fnt font.Face, pos geom.Vec2, color color.Color) {
-	rpos := i.bounds.Min.Mul(-i.mul).Add(pos).Round()
+func (i ViewPort) DrawText(str string, fnt font.Face, pos image.Point, color color.Color) {
+	x, y := i.pos(pos)
 
-	text.Draw(i.img, str, fnt, rpos.X, rpos.Y, color)
+	text.Draw(i.img, str, fnt, int(x), int(y), color)
 }
 
-func (i ViewPort) Set(pos geom.Vec2, clr color.Color) {
-	rpos := i.bounds.Min.Mul(-i.mul).Add(pos).Round()
+func (i ViewPort) Set(pos image.Point, clr color.Color) {
+	x, y := i.pos(pos)
 
-	i.img.Set(rpos.X, rpos.Y, clr)
+	i.img.Set(int(x), int(y), clr)
+}
+
+func (i ViewPort) pos(pt image.Point) (float64, float64) {
+	x, y := float64(i.bounds.Min.X), float64(i.bounds.Min.Y)
+
+	return math.Round(-i.mul*x + float64(pt.X)), math.Round(-i.mul*y + float64(pt.Y))
 }

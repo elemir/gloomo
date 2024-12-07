@@ -4,39 +4,37 @@ import (
 	"image"
 
 	"github.com/hajimehoshi/ebiten/v2"
-
-	"github.com/elemir/gloomo/geom"
 )
 
 // Camera is a special object for rendering.
 type Camera struct {
-	sceneSize geom.Vec2
-	bounds    geom.Rectangle
+	sceneSize image.Point
+	bounds    image.Rectangle
 }
 
 func NewCamera() *Camera {
 	return &Camera{}
 }
 
-func (c Camera) Bounds() geom.Rectangle {
+func (c Camera) Bounds() image.Rectangle {
 	return c.bounds
 }
 
 func (c Camera) ViewPort(screen *ebiten.Image, mul float64) ViewPort {
 	return ViewPort{
 		img:    screen,
-		bounds: c.bounds.Round(),
+		bounds: c.bounds,
 		mul:    mul,
 	}
 }
 
-func (c *Camera) Move(shift geom.Vec2) {
+func (c *Camera) Move(shift image.Point) {
 	c.bounds = c.bounds.Add(shift)
 }
 
-func (c *Camera) SetPosition(pos geom.Vec2) {
-	x, y := pos.Unpack()
-	w, h := c.bounds.Size().Unpack()
+func (c *Camera) SetPosition(pos image.Point) {
+	x, y := pos.X, pos.Y
+	w, h := c.bounds.Size().X, c.bounds.Size().Y
 
 	if x < w/2 {
 		x = w / 2
@@ -46,25 +44,25 @@ func (c *Camera) SetPosition(pos geom.Vec2) {
 		y = h / 2
 	}
 
-	if x+w/2 > c.sceneSize[0] {
-		x = c.sceneSize[0] - w/2
+	if x+w/2 > c.sceneSize.X {
+		x = c.sceneSize.X - w/2
 	}
 
-	if y+h/2 > c.sceneSize[1] {
-		y = c.sceneSize[1] - h/2
+	if y+h/2 > c.sceneSize.Y {
+		y = c.sceneSize.Y - h/2
 	}
 
-	c.bounds = geom.Rect(x-w/2, y-h/2, w, h)
+	c.bounds = image.Rect(x-w/2, y-h/2, w, h)
 }
 
-func (c *Camera) SetSize(w, h float64) {
-	x, y := c.bounds.Min[0], c.bounds.Min[1]
+func (c *Camera) SetSize(w, h int) {
+	x, y := c.bounds.Min.X, c.bounds.Min.Y
 
-	c.bounds = geom.Rect(x, y, w, h)
+	c.bounds = image.Rect(x, y, w, h)
 }
 
-func (c *Camera) RealMousePosition() geom.Vec2 {
+func (c *Camera) RealMousePosition() image.Point {
 	x, y := ebiten.CursorPosition()
 
-	return c.bounds.Min.Add(geom.FromPoint(image.Pt(x, y)))
+	return c.bounds.Min.Add(image.Pt(x, y))
 }

@@ -1,18 +1,17 @@
 package gloomo
 
 import (
+	"image"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
-
-	"github.com/elemir/gloomo/geom"
 )
 
 type Sprite struct {
 	image *ebiten.Image
 
-	angle    geom.Angle
-	position geom.Vec2
+	angle    float64
+	position image.Point
 }
 
 func NewSprite(img *ebiten.Image) *Sprite {
@@ -21,16 +20,16 @@ func NewSprite(img *ebiten.Image) *Sprite {
 	}
 }
 
-func (s *Sprite) SetAngle(angle geom.Angle) {
+func (s *Sprite) SetAngle(angle float64) {
 	s.angle = angle
 }
 
-func (s *Sprite) SetPosition(pos geom.Vec2) {
+func (s *Sprite) SetPosition(pos image.Point) {
 	s.position = pos
 }
 
-func (s Sprite) Bounds() geom.Rectangle {
-	return geom.FromRectangle(s.image.Bounds()).Add(s.position)
+func (s Sprite) Bounds() image.Rectangle {
+	return s.image.Bounds().Add(s.position)
 }
 
 func (s Sprite) Draw(screen ViewPort) {
@@ -38,7 +37,7 @@ func (s Sprite) Draw(screen ViewPort) {
 
 	op.GeoM.Translate(-float64(s.image.Bounds().Dx())/2, -float64(s.image.Bounds().Dx())/2)
 	op.GeoM.Rotate(float64(s.angle))
-	op.GeoM.Translate(math.Round(s.position[0]), math.Round(s.position[1]))
+	op.GeoM.Translate(math.Round(float64(s.position.X)), math.Round(float64(s.position.Y)))
 	op.GeoM.Scale(1, 1)
 
 	screen.DrawImage(s.image, &op)

@@ -1,22 +1,20 @@
 package gloomo
 
 import (
-	"math"
+	"image"
 
 	"github.com/hajimehoshi/ebiten/v2"
-
-	"github.com/elemir/gloomo/geom"
 )
 
 type Shader struct {
 	shader   *ebiten.Shader
 	uniforms map[string]any
 
-	bounds geom.Rectangle
+	bounds image.Rectangle
 	img    *ebiten.Image
 }
 
-func NewShader(shader *ebiten.Shader, bounds geom.Rectangle, uniforms map[string]any) *Shader {
+func NewShader(shader *ebiten.Shader, bounds image.Rectangle, uniforms map[string]any) *Shader {
 	return &Shader{
 		shader:   shader,
 		uniforms: uniforms,
@@ -25,11 +23,11 @@ func NewShader(shader *ebiten.Shader, bounds geom.Rectangle, uniforms map[string
 	}
 }
 
-func (s Shader) Bounds() geom.Rectangle {
+func (s Shader) Bounds() image.Rectangle {
 	return s.bounds
 }
 
-func (s *Shader) SetPosition(pos geom.Vec2) {
+func (s *Shader) SetPosition(pos image.Point) {
 	s.bounds = s.bounds.Sub(s.bounds.Min).Add(pos)
 }
 
@@ -48,7 +46,7 @@ func (s *Shader) SetImage(img *ebiten.Image) {
 func (s Shader) Draw(screen ViewPort) {
 	var op ebiten.DrawRectShaderOptions
 
-	op.GeoM.Translate(math.Round(s.bounds.Min[0]), math.Round(s.bounds.Min[1]))
+	op.GeoM.Translate(float64(s.bounds.Min.X), float64(s.bounds.Min.Y))
 	op.GeoM.Scale(1, 1)
 
 	op.Uniforms = s.uniforms
@@ -61,7 +59,7 @@ func (s Shader) Draw(screen ViewPort) {
 		BlendOperationAlpha:         ebiten.BlendOperationAdd,
 	}
 	op.Images[0] = s.img
-	size := s.bounds.Max.Sub(s.bounds.Min).Round()
+	size := s.bounds.Max.Sub(s.bounds.Min)
 
 	screen.DrawRectShader(size.X, size.Y, s.shader, &op)
 }
