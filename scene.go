@@ -89,7 +89,8 @@ func (s *Scene) Draw(screen *ebiten.Image) {
 // AddNode is used for adding node to scene with specified options.
 func (s *Scene) AddNode(baseNode Node, opts ...AddNodeOpt) {
 	node := node{
-		Node: baseNode,
+		Node:     baseNode,
+		parallax: 1,
 	}
 
 	for _, opt := range opts {

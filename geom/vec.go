@@ -1,6 +1,7 @@
 package geom
 
 import (
+	"fmt"
 	"image"
 	"math"
 )
@@ -61,4 +62,8 @@ func (v Vec2) Angle() Angle {
 
 func (v Vec2) Unpack() (float64, float64) {
 	return v[0], v[1]
+}
+
+func (v Vec2) String() string {
+	return fmt.Sprintf("(%.2f, %.2f)", v[0], v[1])
 }

@@ -29,12 +29,18 @@ func (c Camera) ViewPort(screen *ebiten.Image, mul float64) ViewPort {
 }
 
 func (c *Camera) Move(shift image.Point) {
-	c.bounds = c.bounds.Add(shift)
+	pos := c.GetPosition()
+
+	c.SetPosition(pos.Add(shift))
+}
+
+func (c *Camera) GetPosition() image.Point {
+	return c.bounds.Max.Add(c.bounds.Min).Div(2)
 }
 
 func (c *Camera) SetPosition(pos image.Point) {
 	x, y := pos.X, pos.Y
-	w, h := c.bounds.Size().X, c.bounds.Size().Y
+	w, h := c.bounds.Dx(), c.bounds.Dy()
 
 	if x < w/2 {
 		x = w / 2
@@ -52,13 +58,13 @@ func (c *Camera) SetPosition(pos image.Point) {
 		y = c.sceneSize.Y - h/2
 	}
 
-	c.bounds = image.Rect(x-w/2, y-h/2, w, h)
+	c.bounds = image.Rect(x-w/2, y-h/2, x+w/2, y+h/2)
 }
 
 func (c *Camera) SetSize(w, h int) {
 	x, y := c.bounds.Min.X, c.bounds.Min.Y
 
-	c.bounds = image.Rect(x, y, w, h)
+	c.bounds = image.Rect(x, y, x+w, x+h)
 }
 
 func (c *Camera) RealMousePosition() image.Point {

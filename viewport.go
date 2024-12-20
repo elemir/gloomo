@@ -7,6 +7,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 	"golang.org/x/image/font"
 )
 
@@ -35,6 +36,12 @@ func (i ViewPort) DrawText(str string, fnt font.Face, pos image.Point, color col
 	x, y := i.pos(pos)
 
 	text.Draw(i.img, str, fnt, int(x), int(y), color)
+}
+
+func (i ViewPort) DrawRect(x, y, w, h int, clr color.Color) {
+	dx, dy := i.pos(image.Pt(x, y))
+
+	vector.DrawFilledRect(i.img, float32(dx), float32(dy), float32(w), float32(h), clr, false)
 }
 
 func (i ViewPort) Set(pos image.Point, clr color.Color) {
