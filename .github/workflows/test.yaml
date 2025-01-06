@@ -1,4 +1,4 @@
-name: Test
+name: "Build & Test"
 
 on:
   push:
@@ -23,5 +23,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install libasound2-dev libgl1-mesa-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev libxxf86vm-dev
           
+    - name: Build
+      run: go build -v ./...
+      
     - name: Test
       run: go test -v ./...
