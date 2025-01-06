@@ -32,7 +32,7 @@ func TestSparseArray(t *testing.T) {
 		require.Equal(t, "meow", value)
 		require.True(t, ok)
 
-		value, ok = arr.Get(10)
+		value, ok = arr.Get(11)
 		require.Equal(t, "", value)
 		require.False(t, ok)
 	})
