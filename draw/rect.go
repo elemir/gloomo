@@ -11,7 +11,12 @@ import (
 
 func Rect(repo NodeRepo) DrawFunc {
 	return func(id gid.ID, img *ebiten.Image) {
-		vector.DrawFilledRect(img, 0, 0, 64, 64, color.White, false)
+		node, ok := repo.Get(id)
+		if !ok {
+			return
+		}
 
+		vector.DrawFilledRect(img, float32(node.Position.X), float32(node.Position.Y),
+			float32(node.Size.X), float32(node.Size.Y), color.White, false)
 	}
 }

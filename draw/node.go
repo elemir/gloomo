@@ -5,10 +5,12 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 
-	"github.com/elemir/gloomo/id"
+	gid "github.com/elemir/gloomo/id"
 )
 
-type NodeRepo interface{}
+type NodeRepo interface {
+	Get(id gid.ID) (Node, bool)
+}
 
 type Node struct {
 	Draw     DrawFunc
@@ -16,4 +18,4 @@ type Node struct {
 	Size     image.Point
 }
 
-type DrawFunc func(id.ID, *ebiten.Image)
+type DrawFunc func(gid.ID, *ebiten.Image)

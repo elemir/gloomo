@@ -41,3 +41,5 @@ linters-settings:
       - id ID
       - x float64
       - y float64
+  wsl:
+    allow-cuddle-declarations: true
