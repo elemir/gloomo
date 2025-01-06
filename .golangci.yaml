@@ -7,17 +7,22 @@ linters:
     - paralleltest
     - mnd
 linters-settings:
-  varnamelen:
-    ignore-names:
-      - xs
-    ignore-decls:
-      - i int
-      - id ID
-      - x float64
-      - y float64
+  gci:
+    sections:
+      - standard
+      - default
+      - localmodule
   gosec:
     excludes:
       - G404 # Insecure random number source (rand)
+  funlen:
+    lines: 200
+    statements: 150
+  importas:
+    no-extra-aliases: true
+    alias:
+      - pkg: github.com/elemir/gloomo/id
+        alias: gid
   ireturn:
     allow:
       - anon
@@ -25,6 +30,14 @@ linters-settings:
       - empty
       - stdlib
       - generic
-  funlen:
-    lines: 200
-    statements: 150
+  varnamelen:
+    ignore-names:
+      - xs
+      - ok
+    ignore-decls:
+      - i int
+      - id gid.ID
+      - id id.ID
+      - id ID
+      - x float64
+      - y float64
