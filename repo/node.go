@@ -30,3 +30,7 @@ func (n *Node) List() iter.Seq2[gid.ID, draw.Node] {
 func (n *Node) Upsert(id gid.ID, node draw.Node) {
 	n.Nodes.Set(id, node)
 }
+
+func (n *Node) Get(id gid.ID) (draw.Node, bool) {
+	return n.Nodes.Get(id)
+}
