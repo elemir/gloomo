@@ -9,7 +9,7 @@ import (
 	gid "github.com/elemir/gloomo/id"
 )
 
-func Rect(repo NodeRepo) DrawFunc {
+func Rect(repo NodeRepo) Func {
 	return func(id gid.ID, img *ebiten.Image) {
 		node, ok := repo.Get(id)
 		if !ok {

@@ -13,9 +13,9 @@ type NodeRepo interface {
 }
 
 type Node struct {
-	Draw     DrawFunc
+	Draw     Func
 	Position image.Point
 	Size     image.Point
 }
 
-type DrawFunc func(gid.ID, *ebiten.Image)
+type Func func(gid.ID, *ebiten.Image)
