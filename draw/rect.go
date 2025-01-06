@@ -9,8 +9,9 @@ import (
 	gid "github.com/elemir/gloomo/id"
 )
 
-type Rect struct{}
+func Rect(repo NodeRepo) DrawFunc {
+	return func(id gid.ID, img *ebiten.Image) {
+		vector.DrawFilledRect(img, 0, 0, 64, 64, color.White, false)
 
-func (r Rect) Draw(id gid.ID, img *ebiten.Image) {
-	vector.DrawFilledRect(img, 0, 0, 64, 64, color.White, false)
+	}
 }
