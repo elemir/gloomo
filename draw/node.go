@@ -8,10 +8,12 @@ import (
 	"github.com/elemir/gloomo/id"
 )
 
-type DrawFunc func(id.ID, *ebiten.Image)
+type NodeRepo interface{}
 
 type Node struct {
 	Draw     DrawFunc
 	Position image.Point
 	Size     image.Point
 }
+
+type DrawFunc func(id.ID, *ebiten.Image)

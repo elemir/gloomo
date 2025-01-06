@@ -1,6 +1,9 @@
 version: '3'
 
 tasks:
+  example:
+    cmds:
+      - go run ./example
   test:
     cmds:
       - go test ./...
