@@ -6,6 +6,7 @@ tasks:
       - go run ./example
   test:
     cmds:
+      - go build ./...
       - go test ./...
   cover:
     cmds:
@@ -13,7 +14,7 @@ tasks:
       - go tool cover -html=.cover.out
   lint:
     cmds:
-      - golangci-lint run --fast "./..."
+      - golangci-lint run "./..."
   lint-fix:
     cmds:
       - golangci-lint run --fix "./..."
