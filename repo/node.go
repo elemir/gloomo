@@ -3,8 +3,8 @@ package repo
 import (
 	"iter"
 
-	"github.com/elemir/gloomo/draw"
 	gid "github.com/elemir/gloomo/id"
+	"github.com/elemir/gloomo/model"
 )
 
 type Collection[T any] interface {
@@ -14,11 +14,11 @@ type Collection[T any] interface {
 }
 
 type Node struct {
-	Nodes Collection[draw.Node]
+	Nodes Collection[model.Node]
 }
 
-func (n *Node) List() iter.Seq2[gid.ID, draw.Node] {
-	return func(yield func(gid.ID, draw.Node) bool) {
+func (n *Node) List() iter.Seq2[gid.ID, model.Node] {
+	return func(yield func(gid.ID, model.Node) bool) {
 		for i, node := range n.Nodes.Items() {
 			if !yield(i, node) {
 				return
@@ -27,10 +27,10 @@ func (n *Node) List() iter.Seq2[gid.ID, draw.Node] {
 	}
 }
 
-func (n *Node) Upsert(id gid.ID, node draw.Node) {
+func (n *Node) Upsert(id gid.ID, node model.Node) {
 	n.Nodes.Set(id, node)
 }
 
-func (n *Node) Get(id gid.ID) (draw.Node, bool) {
+func (n *Node) Get(id gid.ID) (model.Node, bool) {
 	return n.Nodes.Get(id)
 }

@@ -5,12 +5,12 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 
-	"github.com/elemir/gloomo/draw"
 	gid "github.com/elemir/gloomo/id"
+	"github.com/elemir/gloomo/model"
 )
 
 type NodeRepository interface {
-	List() iter.Seq2[gid.ID, draw.Node]
+	List() iter.Seq2[gid.ID, model.Node]
 }
 
 type Render struct {
@@ -25,12 +25,6 @@ func NewRender(repo NodeRepository) *Render {
 
 func (r *Render) Draw(screen *ebiten.Image) {
 	for id, node := range r.repo.List() {
-		/*		halfSize := node.Size.Div(2)
-				rect := image.Rectangle{
-					Min: node.Position.Sub(halfSize),
-					Max: node.Position.Add(halfSize),
-				}
-		*/
 		node.Draw(id, screen)
 	}
 }

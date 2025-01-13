@@ -7,9 +7,14 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 
 	gid "github.com/elemir/gloomo/id"
+	"github.com/elemir/gloomo/model"
 )
 
-func Rect(repo NodeRepo) Func {
+type RectRepo interface {
+	Get(id gid.ID) (model.Node, bool)
+}
+
+func Rect(repo RectRepo) model.DrawFunc {
 	return func(id gid.ID, img *ebiten.Image) {
 		node, ok := repo.Get(id)
 		if !ok {
