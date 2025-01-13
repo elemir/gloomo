@@ -1,4 +1,4 @@
-package draw
+package model
 
 import (
 	"image"
@@ -8,14 +8,10 @@ import (
 	gid "github.com/elemir/gloomo/id"
 )
 
-type NodeRepo interface {
-	Get(id gid.ID) (Node, bool)
-}
-
 type Node struct {
-	Draw     Func
+	Draw     DrawFunc
 	Position image.Point
 	Size     image.Point
 }
 
-type Func func(gid.ID, *ebiten.Image)
+type DrawFunc func(gid.ID, *ebiten.Image)
