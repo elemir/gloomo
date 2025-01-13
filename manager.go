@@ -34,7 +34,7 @@ func (m *Manager) runSystems(systems []System) error {
 	for _, system := range systems {
 		err := system.Run()
 		if err != nil {
-			return err
+			return fmt.Errorf("system %t: %w", system, err)
 		}
 	}
 
