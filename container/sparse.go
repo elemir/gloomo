@@ -57,8 +57,11 @@ func (sa *SparseArray[T]) Delete(id gid.ID) {
 
 	lastElem, elems := popSlice(sa.elems)
 	sa.elems = elems
-	sa.elems[idx] = lastElem
-	sa.indexes[lastElem.id] = idx
+
+	if idx != len(sa.elems) {
+		sa.elems[idx] = lastElem
+		sa.indexes[lastElem.id] = idx
+	}
 
 	delete(sa.indexes, id)
 }

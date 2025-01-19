@@ -88,4 +88,11 @@ func TestSparseArray(t *testing.T) {
 
 		require.Equal(t, 1, i)
 	})
+
+	t.Run("delete-all", func(t *testing.T) {
+		arr.Delete(1)
+		arr.Delete(5)
+
+		require.Empty(t, maps.Collect(arr.Items()))
+	})
 }

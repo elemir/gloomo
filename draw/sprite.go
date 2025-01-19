@@ -12,7 +12,7 @@ type SpriteRepo interface {
 }
 
 func Sprite(repo SpriteRepo) model.DrawFunc {
-	return func(id gid.ID, img *ebiten.Image) {
+	return func(id gid.ID, screen *ebiten.Image) {
 		sprite, ok := repo.Get(id)
 		if !ok {
 			return
@@ -21,6 +21,6 @@ func Sprite(repo SpriteRepo) model.DrawFunc {
 		var opts ebiten.DrawImageOptions
 		opts.GeoM.Translate(float64(sprite.Position.X), float64(sprite.Position.Y))
 
-		img.DrawImage(sprite.Image, &opts)
+		screen.DrawImage(sprite.Image, &opts)
 	}
 }
