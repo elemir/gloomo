@@ -1,6 +1,14 @@
 package gloomo
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
+
+type startupSystem struct {
+	system   System
+	finished bool
+}
 
 type System interface {
 	Run() error
@@ -8,37 +16,35 @@ type System interface {
 
 // Manager is a standard system runner for gloomo engine.
 type Manager struct {
-	systems   []System
-	startups  []System
-	secondRun bool
+	systems  []System
+	startups []startupSystem
 }
 
 // Run all systems in a order of their addition.
 func (m *Manager) Run() error {
-	if !m.secondRun {
-		if err := m.runSystems(m.startups); err != nil {
-			return fmt.Errorf("run startup systems: %w", err)
+	var errs []error
+
+	for i, startup := range m.startups {
+		if startup.finished {
+			continue
 		}
 
-		m.secondRun = true
+		err := startup.system.Run()
+		if err != nil {
+			errs = append(errs, fmt.Errorf("startup system %T: %w", startup.system, err))
+		} else {
+			m.startups[i].finished = true
+		}
 	}
 
-	if err := m.runSystems(m.systems); err != nil {
-		return fmt.Errorf("run systems: %w", err)
-	}
-
-	return nil
-}
-
-func (m *Manager) runSystems(systems []System) error {
-	for _, system := range systems {
+	for _, system := range m.systems {
 		err := system.Run()
 		if err != nil {
-			return fmt.Errorf("system %t: %w", system, err)
+			errs = append(errs, fmt.Errorf("system %T: %w", system, err))
 		}
 	}
 
-	return nil
+	return errors.Join(errs...)
 }
 
 func (m *Manager) Add(system System) {
@@ -46,5 +52,7 @@ func (m *Manager) Add(system System) {
 }
 
 func (m *Manager) AddStartup(system System) {
-	m.startups = append(m.startups, system)
+	m.startups = append(m.startups, startupSystem{
+		system: system,
+	})
 }

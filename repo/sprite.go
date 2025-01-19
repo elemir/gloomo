@@ -47,6 +47,8 @@ func (s *Sprite) Upsert(id gid.ID, sprite model.Sprite) {
 		Position: sprite.Position,
 		Size:     sprite.Image.Bounds().Size(),
 	})
+
+	s.Images.Set(id, sprite.Image)
 }
 
 func (s *Sprite) Get(id gid.ID) (model.Sprite, bool) {
