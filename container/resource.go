@@ -4,7 +4,7 @@ type Resource[T any] struct {
 	value *T
 }
 
-func (r Resource[T]) Get() (T, bool) {
+func (r *Resource[T]) Get() (T, bool) {
 	if r.value == nil {
 		return Zero[T](), false
 	}
