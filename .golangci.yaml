@@ -33,6 +33,8 @@ linters-settings:
       - empty
       - stdlib
       - generic
+  nlreturn:
+    block-size: 2
   wsl:
     allow-cuddle-declarations: true
 issues:
