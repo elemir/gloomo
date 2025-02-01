@@ -45,6 +45,7 @@ func (s *Sprite) Upsert(id gid.ID, sprite model.Sprite) {
 	s.Nodes.Set(id, model.Node{
 		Draw:     s.drawFunc,
 		Position: sprite.Position,
+		ZIndex:   sprite.ZIndex,
 		Size:     sprite.Image.Bounds().Size(),
 	})
 
