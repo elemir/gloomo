@@ -1,7 +1,9 @@
 package gloomo
 
 import (
+	"cmp"
 	"iter"
+	"slices"
 
 	"github.com/hajimehoshi/ebiten/v2"
 
@@ -23,8 +25,36 @@ func NewRender(repo NodeRepository) *Render {
 	}
 }
 
+type idNode struct {
+	id   gid.ID
+	node model.Node
+}
+
 func (r *Render) Draw(screen *ebiten.Image) {
+	var idNodes []idNode
+
 	for id, node := range r.repo.List() {
-		node.Draw(id, screen)
+		idNodes = append(idNodes, idNode{
+			id:   id,
+			node: node,
+		})
+	}
+
+	slices.SortFunc(idNodes, func(a, b idNode) int {
+		compare := cmp.Compare(a.node.ZIndex, b.node.ZIndex)
+		if compare != 0 {
+			return compare
+		}
+
+		compare = cmp.Compare(a.node.Position.X, b.node.Position.X)
+		if compare != 0 {
+			return compare
+		}
+
+		return cmp.Compare(a.node.Position.Y, b.node.Position.Y)
+	})
+
+	for _, idNode := range idNodes {
+		idNode.node.Draw(idNode.id, screen)
 	}
 }

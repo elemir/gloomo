@@ -12,6 +12,7 @@ type Node struct {
 	Draw     DrawFunc
 	Position image.Point
 	Size     image.Point
+	ZIndex   int
 }
 
 type DrawFunc func(gid.ID, *ebiten.Image)

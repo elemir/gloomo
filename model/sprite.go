@@ -9,4 +9,5 @@ import (
 type Sprite struct {
 	Image    *ebiten.Image
 	Position image.Point
+	ZIndex   int
 }

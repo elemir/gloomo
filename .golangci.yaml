@@ -7,6 +7,8 @@ linters:
     - paralleltest
     - mnd
     - exhaustruct
+    - varnamelen
+    - prealloc
 linters-settings:
   gci:
     sections:
@@ -31,16 +33,12 @@ linters-settings:
       - empty
       - stdlib
       - generic
-  varnamelen:
-    ignore-names:
-      - xs
-      - ok
-    ignore-decls:
-      - i int
-      - id gid.ID
-      - id id.ID
-      - id ID
-      - x float64
-      - y float64
+  nlreturn:
+    block-size: 2
   wsl:
     allow-cuddle-declarations: true
+issues:
+  exclude-rules:
+  - path: _test\.go
+    linters:
+      - err113
