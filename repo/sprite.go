@@ -7,27 +7,27 @@ import (
 
 	"github.com/elemir/gloomo/draw"
 	gid "github.com/elemir/gloomo/id"
-	"github.com/elemir/gloomo/model"
+	"github.com/elemir/gloomo/node"
 )
 
 type Sprite struct {
-	Nodes  Collection[model.Node]
+	Nodes  Collection[node.Node]
 	Images Collection[*ebiten.Image]
 
-	drawFunc model.DrawFunc
+	drawFunc node.DrawFunc
 }
 
-func (s *Sprite) List() iter.Seq2[gid.ID, model.Sprite] {
-	return func(yield func(gid.ID, model.Sprite) bool) {
-		for id, node := range s.Nodes.Items() {
+func (s *Sprite) List() iter.Seq2[gid.ID, node.Sprite] {
+	return func(yield func(gid.ID, node.Sprite) bool) {
+		for id, nd := range s.Nodes.Items() {
 			img, ok := s.Images.Get(id)
 			if !ok {
 				continue
 			}
 
-			sprite := model.Sprite{
+			sprite := node.Sprite{
 				Image:    img,
-				Position: node.Position,
+				Position: nd.Position,
 			}
 
 			if !yield(id, sprite) {
@@ -37,12 +37,12 @@ func (s *Sprite) List() iter.Seq2[gid.ID, model.Sprite] {
 	}
 }
 
-func (s *Sprite) Upsert(id gid.ID, sprite model.Sprite) {
+func (s *Sprite) Upsert(id gid.ID, sprite node.Sprite) {
 	if s.drawFunc == nil {
 		s.drawFunc = draw.Sprite(s)
 	}
 
-	s.Nodes.Set(id, model.Node{
+	s.Nodes.Set(id, node.Node{
 		Draw:     s.drawFunc,
 		Position: sprite.Position,
 		ZIndex:   sprite.ZIndex,
@@ -52,19 +52,19 @@ func (s *Sprite) Upsert(id gid.ID, sprite model.Sprite) {
 	s.Images.Set(id, sprite.Image)
 }
 
-func (s *Sprite) Get(id gid.ID) (model.Sprite, bool) {
-	node, ok := s.Nodes.Get(id)
+func (s *Sprite) Get(id gid.ID) (node.Sprite, bool) {
+	nd, ok := s.Nodes.Get(id)
 	if !ok {
-		return model.Sprite{}, false
+		return node.Sprite{}, false
 	}
 
 	img, ok := s.Images.Get(id)
 	if !ok {
-		return model.Sprite{}, false
+		return node.Sprite{}, false
 	}
 
-	return model.Sprite{
+	return node.Sprite{
 		Image:    img,
-		Position: node.Position,
+		Position: nd.Position,
 	}, true
 }

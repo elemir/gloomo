@@ -8,11 +8,11 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 
 	gid "github.com/elemir/gloomo/id"
-	"github.com/elemir/gloomo/model"
+	"github.com/elemir/gloomo/node"
 )
 
 type NodeRepository interface {
-	List() iter.Seq2[gid.ID, model.Node]
+	List() iter.Seq2[gid.ID, node.Node]
 }
 
 type Render struct {
@@ -27,7 +27,7 @@ func NewRender(repo NodeRepository) *Render {
 
 type idNode struct {
 	id   gid.ID
-	node model.Node
+	node node.Node
 }
 
 func (r *Render) Draw(screen *ebiten.Image) {
