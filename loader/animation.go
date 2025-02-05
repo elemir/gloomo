@@ -62,6 +62,7 @@ func (a *Animation) Run() error {
 		var animation model.Animation
 
 		animation.Steps = make(map[string][]*ebiten.Image)
+		animation.Size = image.Point(animAsset.Size)
 
 		for _, anim := range animAsset.Animations {
 			for _, step := range anim.Steps {

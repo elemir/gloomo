@@ -21,7 +21,7 @@ func (a *AnimatedSprite) List() iter.Seq2[gid.ID, model.AnimatedSprite] {
 		for id, anim := range a.Animations.Items() {
 			counter, ok := a.StepCounters.Get(id)
 			if !ok {
-				continue
+				counter = 0
 			}
 
 			current, ok := a.CurrentAnimations.Get(id)
