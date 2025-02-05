@@ -13,7 +13,7 @@ import (
 var errUnknownCurrentAnimation = errors.New("unknown current animation")
 
 const (
-	Speed = 300
+	Speed = 10
 )
 
 type SpriteRepo interface {
@@ -37,7 +37,7 @@ func (a *Animate) Run() error {
 			return fmt.Errorf("animation %q: %w", anim.Current, errUnknownCurrentAnimation)
 		}
 
-		anim.Counter = (anim.Counter + 1) % (len(currentSteps) * 300)
+		anim.Counter = (anim.Counter + 1) % (len(currentSteps) * Speed)
 		a.AnimationRepo.Upsert(id, anim)
 
 		a.SpriteRepo.Upsert(id, node.Sprite{
