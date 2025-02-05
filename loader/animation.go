@@ -19,7 +19,7 @@ import (
 type AnimAsset struct {
 	SpriteSheet string   `yaml:"spritesheet"`
 	Size        AnimSize `yaml:"size"`
-	Animations  []Anim   `yaml:"steps"`
+	Animations  []Anim   `yaml:"animations"`
 }
 
 type AnimSize struct {
@@ -34,7 +34,7 @@ type Anim struct {
 
 type AnimAssets interface {
 	NotLoadedPaths() iter.Seq[string]
-	Put(path string, typ string, val model.Animation)
+	Put(path string, val *model.Animation)
 }
 
 type Animation struct {
@@ -59,16 +59,18 @@ func (a *Animation) Run() error {
 			continue
 		}
 
-		for _, anim := range animAsset.Animations {
-			var animation model.Animation
+		var animation model.Animation
 
+		animation.Steps = make(map[string][]*ebiten.Image)
+
+		for _, anim := range animAsset.Animations {
 			for _, step := range anim.Steps {
 				frame := getSpecificFrame(spriteSheet, animAsset.Size, step)
-				animation.Steps = append(animation.Steps, frame)
+				animation.Steps[anim.Name] = append(animation.Steps[anim.Name], frame)
 			}
-
-			a.Assets.Put(assetPath, anim.Name, animation)
 		}
+
+		a.Assets.Put(assetPath, &animation)
 	}
 
 	return errors.Join(errs...)

@@ -95,4 +95,25 @@ func TestSparseArray(t *testing.T) {
 
 		require.Empty(t, maps.Collect(arr.Items()))
 	})
+
+	t.Run("work-with-ints", func(t *testing.T) {
+		var intArr container.SparseArray[int]
+
+		expected := map[id.ID]int{
+			10: 20,
+			1:  11,
+			5:  15,
+		}
+
+		intArr.Set(10, 20)
+		intArr.Set(1, 11)
+		intArr.Set(5, 15)
+
+		actual := maps.Collect(intArr.Items())
+		require.Equal(t, expected, actual)
+
+		value, ok := intArr.Get(10)
+		require.Equal(t, 20, value)
+		require.True(t, ok)
+	})
 }

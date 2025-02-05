@@ -4,14 +4,14 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 
 	gid "github.com/elemir/gloomo/id"
-	"github.com/elemir/gloomo/model"
+	"github.com/elemir/gloomo/node"
 )
 
 type SpriteRepo interface {
-	Get(id gid.ID) (model.Sprite, bool)
+	Get(id gid.ID) (node.Sprite, bool)
 }
 
-func Sprite(repo SpriteRepo) model.DrawFunc {
+func Sprite(repo SpriteRepo) node.DrawFunc {
 	return func(id gid.ID, screen *ebiten.Image) {
 		sprite, ok := repo.Get(id)
 		if !ok {

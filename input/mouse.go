@@ -4,6 +4,7 @@ import (
 	"image"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 type MouseButton int
@@ -32,7 +33,7 @@ func (m *Mouse) IsPressed(button MouseButton) bool {
 		return false
 	}
 
-	return ebiten.IsMouseButtonPressed(emb)
+	return inpututil.IsMouseButtonJustPressed(emb)
 }
 
 func (m *Mouse) Position() image.Point {

@@ -11,7 +11,7 @@ import (
 	"github.com/elemir/gloomo/container"
 	"github.com/elemir/gloomo/draw"
 	gid "github.com/elemir/gloomo/id"
-	"github.com/elemir/gloomo/model"
+	"github.com/elemir/gloomo/node"
 	"github.com/elemir/gloomo/repo"
 )
 
@@ -39,7 +39,7 @@ func (g *Game) Layout(w int, h int) (int, int) {
 }
 
 func main() {
-	var nodes container.SparseArray[model.Node]
+	var nodes container.SparseArray[node.Node]
 	var idGen gid.Generator
 
 	nodeRepo := &repo.Node{
@@ -50,7 +50,7 @@ func main() {
 	id := idGen.New()
 	drawRect := draw.Rect(nodeRepo)
 
-	nodeRepo.Upsert(id, model.Node{
+	nodeRepo.Upsert(id, node.Node{
 		Draw:     drawRect,
 		Position: image.Pt(100, 100),
 		Size:     image.Pt(64, 64),

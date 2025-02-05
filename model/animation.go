@@ -1,13 +1,20 @@
 package model
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"image"
+
+	"github.com/hajimehoshi/ebiten/v2"
+)
 
 type Animation struct {
-	Steps []*ebiten.Image
+	Size  image.Point
+	Steps map[string][]*ebiten.Image
 }
 
 type AnimatedSprite struct {
-	Animation Animation
+	Animation *Animation
+	Position  image.Point
+	ZIndex    int
 
 	Current string
 	Counter int

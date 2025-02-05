@@ -4,7 +4,7 @@ import (
 	"iter"
 
 	gid "github.com/elemir/gloomo/id"
-	"github.com/elemir/gloomo/model"
+	"github.com/elemir/gloomo/node"
 )
 
 type Collection[T any] interface {
@@ -14,11 +14,11 @@ type Collection[T any] interface {
 }
 
 type Node struct {
-	Nodes Collection[model.Node]
+	Nodes Collection[node.Node]
 }
 
-func (n *Node) List() iter.Seq2[gid.ID, model.Node] {
-	return func(yield func(gid.ID, model.Node) bool) {
+func (n *Node) List() iter.Seq2[gid.ID, node.Node] {
+	return func(yield func(gid.ID, node.Node) bool) {
 		for i, node := range n.Nodes.Items() {
 			if !yield(i, node) {
 				return
@@ -27,10 +27,10 @@ func (n *Node) List() iter.Seq2[gid.ID, model.Node] {
 	}
 }
 
-func (n *Node) Upsert(id gid.ID, node model.Node) {
+func (n *Node) Upsert(id gid.ID, node node.Node) {
 	n.Nodes.Set(id, node)
 }
 
-func (n *Node) Get(id gid.ID) (model.Node, bool) {
+func (n *Node) Get(id gid.ID) (node.Node, bool) {
 	return n.Nodes.Get(id)
 }
