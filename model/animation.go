@@ -3,8 +3,9 @@ package model
 import (
 	"image"
 
-	"github.com/elemir/gloomo/geom"
 	"github.com/hajimehoshi/ebiten/v2"
+
+	"github.com/elemir/gloomo/geom"
 )
 
 type Animation struct {
