@@ -28,13 +28,14 @@ type AnimSize struct {
 }
 
 type Anim struct {
-	Name  string `yaml:"name"`
-	Steps []int  `yaml:"steps"`
+	Name   string `yaml:"name"`
+	Mirror bool   `yaml:"mirror"`
+	Steps  []int  `yaml:"steps"`
 }
 
 type AnimAssets interface {
 	NotLoadedPaths() iter.Seq[string]
-	Put(path string, val *model.Animation)
+	Put(path string, val *model.AnimationSheet)
 }
 
 type Animation struct {
@@ -59,19 +60,24 @@ func (a *Animation) Run() error {
 			continue
 		}
 
-		var animation model.Animation
+		var sheet model.AnimationSheet
 
-		animation.Steps = make(map[string][]*ebiten.Image)
-		animation.Size = image.Point(animAsset.Size)
+		sheet.Animations = make(map[string]model.Animation)
+		sheet.Size = image.Point(animAsset.Size)
 
 		for _, anim := range animAsset.Animations {
+			var animation model.Animation
+			animation.Mirror = anim.Mirror
+
 			for _, step := range anim.Steps {
 				frame := getSpecificFrame(spriteSheet, animAsset.Size, step)
-				animation.Steps[anim.Name] = append(animation.Steps[anim.Name], frame)
+				animation.Steps = append(animation.Steps, frame)
 			}
+
+			sheet.Animations[anim.Name] = animation
 		}
 
-		a.Assets.Put(assetPath, &animation)
+		a.Assets.Put(assetPath, &sheet)
 	}
 
 	return errors.Join(errs...)

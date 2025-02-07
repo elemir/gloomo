@@ -31,19 +31,20 @@ type Animate struct {
 }
 
 func (a *Animate) Run() error {
-	for id, anim := range a.AnimationRepo.List() {
-		currentSteps := anim.Animation.Steps[anim.Current]
-		if len(currentSteps) == 0 {
-			return fmt.Errorf("animation %q: %w", anim.Current, errUnknownCurrentAnimation)
+	for id, sprite := range a.AnimationRepo.List() {
+		animation := sprite.AnimationSheet.Animations[sprite.Current]
+		if len(animation.Steps) == 0 {
+			return fmt.Errorf("animation %q: %w", sprite.Current, errUnknownCurrentAnimation)
 		}
 
-		anim.Counter = (anim.Counter + 1) % (len(currentSteps) * Speed)
-		a.AnimationRepo.Upsert(id, anim)
+		sprite.Counter = (sprite.Counter + 1) % (len(animation.Steps) * Speed)
+		a.AnimationRepo.Upsert(id, sprite)
 
 		a.SpriteRepo.Upsert(id, node.Sprite{
-			Image:    currentSteps[anim.Counter/Speed],
-			Position: anim.Position,
-			ZIndex:   anim.ZIndex,
+			Image:    animation.Steps[sprite.Counter/Speed],
+			Position: sprite.Position.Round(),
+			ZIndex:   sprite.ZIndex,
+			Mirror:   animation.Mirror,
 		})
 	}
 

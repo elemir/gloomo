@@ -19,6 +19,11 @@ func Sprite(repo SpriteRepo) node.DrawFunc {
 		}
 
 		var opts ebiten.DrawImageOptions
+		if sprite.Mirror {
+			opts.GeoM.Scale(-1, 1)
+			opts.GeoM.Translate(float64(sprite.Image.Bounds().Dx()), 0)
+		}
+
 		opts.GeoM.Translate(float64(sprite.Position.X), float64(sprite.Position.Y))
 
 		screen.DrawImage(sprite.Image, &opts)

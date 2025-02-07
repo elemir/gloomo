@@ -1,16 +1,16 @@
 package repo
 
 import (
-	"image"
 	"iter"
 
+	"github.com/elemir/gloomo/geom"
 	gid "github.com/elemir/gloomo/id"
 	"github.com/elemir/gloomo/model"
 )
 
 type AnimatedSprite struct {
-	Animations        Collection[*model.Animation]
-	Positions         Collection[image.Point]
+	Animations        Collection[*model.AnimationSheet]
+	Positions         Collection[geom.Vec2]
 	ZIndices          Collection[int]
 	StepCounters      Collection[int]
 	CurrentAnimations Collection[string]
@@ -40,11 +40,11 @@ func (a *AnimatedSprite) List() iter.Seq2[gid.ID, model.AnimatedSprite] {
 			}
 
 			sprite := model.AnimatedSprite{
-				Animation: anim,
-				Position:  pos,
-				ZIndex:    zIndex,
-				Counter:   counter,
-				Current:   current,
+				AnimationSheet: anim,
+				Position:       pos,
+				ZIndex:         zIndex,
+				Counter:        counter,
+				Current:        current,
 			}
 
 			if !yield(id, sprite) {
@@ -55,7 +55,7 @@ func (a *AnimatedSprite) List() iter.Seq2[gid.ID, model.AnimatedSprite] {
 }
 
 func (a *AnimatedSprite) Upsert(id gid.ID, sprite model.AnimatedSprite) {
-	a.Animations.Set(id, sprite.Animation)
+	a.Animations.Set(id, sprite.AnimationSheet)
 	a.StepCounters.Set(id, sprite.Counter)
 	a.CurrentAnimations.Set(id, sprite.Current)
 	a.Positions.Set(id, sprite.Position)
@@ -89,10 +89,10 @@ func (a *AnimatedSprite) Get(id gid.ID) (model.AnimatedSprite, bool) {
 	}
 
 	return model.AnimatedSprite{
-		Animation: anim,
-		Position:  pos,
-		ZIndex:    zIndex,
-		Counter:   counter,
-		Current:   current,
+		AnimationSheet: anim,
+		Position:       pos,
+		ZIndex:         zIndex,
+		Counter:        counter,
+		Current:        current,
 	}, true
 }

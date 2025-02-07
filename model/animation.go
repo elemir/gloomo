@@ -3,18 +3,24 @@ package model
 import (
 	"image"
 
+	"github.com/elemir/gloomo/geom"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Animation struct {
-	Size  image.Point
-	Steps map[string][]*ebiten.Image
+	Steps  []*ebiten.Image
+	Mirror bool
+}
+
+type AnimationSheet struct {
+	Size       image.Point
+	Animations map[string]Animation
 }
 
 type AnimatedSprite struct {
-	Animation *Animation
-	Position  image.Point
-	ZIndex    int
+	AnimationSheet *AnimationSheet
+	Position       geom.Vec2
+	ZIndex         int
 
 	Current string
 	Counter int

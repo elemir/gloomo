@@ -10,9 +10,16 @@ import (
 	"github.com/elemir/gloomo/node"
 )
 
+type Set interface {
+	Add(id gid.ID)
+	Get(id gid.ID) bool
+	Delete(id gid.ID)
+}
+
 type Sprite struct {
-	Nodes  Collection[node.Node]
-	Images Collection[*ebiten.Image]
+	Nodes   Collection[node.Node]
+	Images  Collection[*ebiten.Image]
+	Mirrors Set
 
 	drawFunc node.DrawFunc
 }
@@ -25,9 +32,12 @@ func (s *Sprite) List() iter.Seq2[gid.ID, node.Sprite] {
 				continue
 			}
 
+			mirror := s.Mirrors.Get(id)
+
 			sprite := node.Sprite{
 				Image:    img,
 				Position: nd.Position,
+				Mirror:   mirror,
 			}
 
 			if !yield(id, sprite) {
@@ -50,6 +60,12 @@ func (s *Sprite) Upsert(id gid.ID, sprite node.Sprite) {
 	})
 
 	s.Images.Set(id, sprite.Image)
+
+	if sprite.Mirror {
+		s.Mirrors.Add(id)
+	} else {
+		s.Mirrors.Delete(id)
+	}
 }
 
 func (s *Sprite) Get(id gid.ID) (node.Sprite, bool) {
@@ -63,8 +79,11 @@ func (s *Sprite) Get(id gid.ID) (node.Sprite, bool) {
 		return node.Sprite{}, false
 	}
 
+	mirror := s.Mirrors.Get(id)
+
 	return node.Sprite{
 		Image:    img,
 		Position: nd.Position,
+		Mirror:   mirror,
 	}, true
 }
