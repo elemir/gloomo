@@ -37,6 +37,10 @@ func (v Vec2) Sub(u Vec2) Vec2 {
 }
 
 func (v Vec2) Normalize() Vec2 {
+	if v.Length() == 0 {
+		return v
+	}
+
 	return v.Mul(1 / v.Length())
 }
 
@@ -56,12 +60,34 @@ func (v Vec2) Dot(u Vec2) float64 {
 	return v[0]*u[0] + v[1]*u[1]
 }
 
+func (v Vec2) Cross(u Vec2) float64 {
+	return v[0]*u[1] - v[1]*u[0]
+}
+
+func (v Vec2) Rotate(angle Angle) Vec2 {
+	return Vec2{
+		angle.Cos()*v[0] - angle.Sin()*v[1],
+		angle.Sin()*v[0] + angle.Cos()*v[1],
+	}
+}
+
 func (v Vec2) Angle() Angle {
 	if v.Length() == 0 {
 		return 0
 	}
 
 	return Angle(math.Copysign(math.Acos(v[1]/v.Length()), -v[0]))
+}
+
+func (v Vec2) AngleBetween(u Vec2) Angle {
+	if v.Length() == 0 || u.Length() == 0 {
+		return 0
+	}
+
+	dot := v.Dot(u)
+	cross := v.Cross(u)
+
+	return Angle(math.Atan2(cross, dot))
 }
 
 func (v Vec2) Unpack() (float64, float64) {
