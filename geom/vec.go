@@ -22,6 +22,13 @@ func (v Vec2) Mul(k float64) Vec2 {
 	}
 }
 
+func (v Vec2) Div(k float64) Vec2 {
+	return Vec2{
+		v[0] / k,
+		v[1] / k,
+	}
+}
+
 func (v Vec2) Add(u Vec2) Vec2 {
 	return Vec2{
 		v[0] + u[0],
@@ -76,18 +83,7 @@ func (v Vec2) Angle() Angle {
 		return 0
 	}
 
-	return Angle(math.Copysign(math.Acos(v[1]/v.Length()), -v[0]))
-}
-
-func (v Vec2) AngleBetween(u Vec2) Angle {
-	if v.Length() == 0 || u.Length() == 0 {
-		return 0
-	}
-
-	dot := v.Dot(u)
-	cross := v.Cross(u)
-
-	return Angle(math.Atan2(cross, dot))
+	return Angle(math.Atan2(v[1], v[0]))
 }
 
 func (v Vec2) Unpack() (float64, float64) {
