@@ -25,4 +25,5 @@ type AnimatedSprite struct {
 
 	Current string
 	Counter int
+	Stopped bool
 }

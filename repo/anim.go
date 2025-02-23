@@ -14,6 +14,7 @@ type AnimatedSprite struct {
 	ZIndices          Collection[int]
 	StepCounters      Collection[int]
 	CurrentAnimations Collection[string]
+	StoppedAnimations Set
 }
 
 func (a *AnimatedSprite) List() iter.Seq2[gid.ID, model.AnimatedSprite] {
@@ -39,12 +40,15 @@ func (a *AnimatedSprite) List() iter.Seq2[gid.ID, model.AnimatedSprite] {
 				continue
 			}
 
+			isStopped := a.StoppedAnimations.Get(id)
+
 			sprite := model.AnimatedSprite{
 				AnimationSheet: anim,
 				Position:       pos,
 				ZIndex:         zIndex,
 				Counter:        counter,
 				Current:        current,
+				Stopped:        isStopped,
 			}
 
 			if !yield(id, sprite) {
@@ -60,6 +64,12 @@ func (a *AnimatedSprite) Upsert(id gid.ID, sprite model.AnimatedSprite) {
 	a.CurrentAnimations.Set(id, sprite.Current)
 	a.Positions.Set(id, sprite.Position)
 	a.ZIndices.Set(id, sprite.ZIndex)
+
+	if sprite.Stopped {
+		a.StoppedAnimations.Add(id)
+	} else {
+		a.StoppedAnimations.Delete(id)
+	}
 }
 
 func (a *AnimatedSprite) Get(id gid.ID) (model.AnimatedSprite, bool) {
@@ -88,11 +98,14 @@ func (a *AnimatedSprite) Get(id gid.ID) (model.AnimatedSprite, bool) {
 		return model.AnimatedSprite{}, false
 	}
 
+	isStopped := a.StoppedAnimations.Get(id)
+
 	return model.AnimatedSprite{
 		AnimationSheet: anim,
 		Position:       pos,
 		ZIndex:         zIndex,
 		Counter:        counter,
 		Current:        current,
+		Stopped:        isStopped,
 	}, true
 }

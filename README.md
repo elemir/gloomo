@@ -7,7 +7,16 @@ Gloomo is a data oriented rendering engine for ebiten. Also gloomo provides some
 
 ## Phylosophy
 
-Gloomo follows ideas of domain driven design, clean architecture from Bob Martin and data-oriented architecture. It uses next conceptions:
+Gloomo follows some ideas of domain driven design, clean architecture from Bob Martin and data-oriented architecture. It based on the next ideas:
+
+1. Orthogonality of data and behaviour. None of application logical units should abstract both of them.
+2. All objects that represents behaviour should be constructed on the start of application.
+3. Objects that represents data may have some additional methods if they are quasi-linear and don't have side effects.
+4. Behaviours part of application should be devided on different layers. Data objects should be used for passing between layers.
+
+### Layers
+
+It uses next conceptions:
 
 * Component 
 * Model 
