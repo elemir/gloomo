@@ -37,6 +37,11 @@ func (a *Animate) Run() error {
 			return fmt.Errorf("animation %q: %w", sprite.Current, errUnknownCurrentAnimation)
 		}
 
+		currIdx := sprite.Counter / Speed
+		if sprite.Counter != 0 && currIdx == 0 && sprite.Stopped {
+			continue
+		}
+
 		sprite.Counter = (sprite.Counter + 1) % (len(animation.Steps) * Speed)
 		a.AnimationRepo.Upsert(id, sprite)
 
